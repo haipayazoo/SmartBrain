@@ -73,7 +73,6 @@ class App extends Component {
     this.setState({input: event.target.value});
   }
 
-  // YOU ARE CAUSING ISSUES
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
       fetch('https://stormy-thicket-72398.herokuapp.com/imageurl', {
