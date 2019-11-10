@@ -14,3 +14,5 @@ Currently, it is only able to detect one face. The web application will have mul
 * Logo interaction using React-Tilt
 
 Server-side code can be found [here](https://github.com/haipayazoo/SmartBrainAPI).
+
+![SmartBrain](images/smartbrain.png)
