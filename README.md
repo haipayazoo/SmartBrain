@@ -1,4 +1,4 @@
-## Smart Brain
+# Smart Brain
 
 A full stack, face detection web application that allows users to register an account and sign-in. The web application takes a URL link to an image and, using the Clarifai API, detects the position where the face is detected an inserts a blue border around the image of the face. Every time you use the app, your Rank goes up by one and is saved onto the database.
 
