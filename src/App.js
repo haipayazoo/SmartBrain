@@ -25,8 +25,8 @@ const initialState = {
 	input: '',
 	imageUrl: '',
 	boxes: [],
-	route: 'signin',
-	isSignedIn: false,
+	route: 'home',
+	isSignedIn: true,
 	user: {
 		id: '',
 		name: '',
@@ -79,7 +79,7 @@ class App extends Component {
 
 	onButtonSubmit = () => {
 		this.setState({ imageUrl: this.state.input });
-		fetch('https://stormy-thicket-72398.herokuapp.com/imageurl', {
+		fetch('http://192.168.99.100:3000/imageurl', {
 			method: 'post',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -89,7 +89,7 @@ class App extends Component {
 			.then(response => response.json())
 			.then(response => {
 				if (response) {
-					fetch('https://stormy-thicket-72398.herokuapp.com/image', {
+					fetch('http://192.168.99.100:3000/image', {
 						method: 'put',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({
