@@ -7,6 +7,8 @@ import Rank from './components/Rank/Rank';
 import Signin from './components/Signin/Signin';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Register from './components/Register/Register';
+import Modal from './components/Modal/Modal';
+import Profile from './components/Profile/Profile';
 import './App.css';
 
 const particleOptions = {
@@ -15,10 +17,10 @@ const particleOptions = {
 			value: 170,
 			density: {
 				enable: true,
-				value_area: 700
-			}
-		}
-	}
+				value_area: 700,
+			},
+		},
+	},
 };
 
 const initialState = {
@@ -27,13 +29,14 @@ const initialState = {
 	boxes: [],
 	route: 'home',
 	isSignedIn: true,
+	isProfileOpen: false,
 	user: {
 		id: '',
 		name: '',
 		email: '',
 		entries: 0,
-		joined: ''
-	}
+		joined: '',
+	},
 };
 
 class App extends Component {
@@ -42,20 +45,20 @@ class App extends Component {
 		this.state = initialState;
 	}
 
-	loadUser = data => {
+	loadUser = (data) => {
 		this.setState({
 			user: {
 				id: data.id,
 				name: data.name,
 				email: data.email,
 				entries: data.entries,
-				joined: data.joined
-			}
+				joined: data.joined,
+			},
 		});
 	};
 
-	calculateFaceLocations = data => {
-		return data.outputs[0].data.regions.map(face => {
+	calculateFaceLocations = (data) => {
+		return data.outputs[0].data.regions.map((face) => {
 			const clarifaiFace = face.region_info.bounding_box;
 			const image = document.getElementById('inputimage');
 			const width = Number(image.width);
@@ -64,16 +67,16 @@ class App extends Component {
 				leftCol: clarifaiFace.left_col * width,
 				topRow: clarifaiFace.top_row * height,
 				rightCol: width - clarifaiFace.right_col * width,
-				bottomRow: height - clarifaiFace.bottom_row * height
+				bottomRow: height - clarifaiFace.bottom_row * height,
 			};
 		});
 	};
 
-	displayFaceBoxes = boxes => {
+	displayFaceBoxes = (boxes) => {
 		this.setState({ boxes: boxes });
 	};
 
-	onInputChange = event => {
+	onInputChange = (event) => {
 		this.setState({ input: event.target.value });
 	};
 
@@ -83,31 +86,31 @@ class App extends Component {
 			method: 'post',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
-				input: this.state.input
-			})
+				input: this.state.input,
+			}),
 		})
-			.then(response => response.json())
-			.then(response => {
+			.then((response) => response.json())
+			.then((response) => {
 				if (response) {
 					fetch('http://192.168.99.100:3000/image', {
 						method: 'put',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({
-							id: this.state.user.id
-						})
+							id: this.state.user.id,
+						}),
 					})
-						.then(response => response.json())
-						.then(count => {
+						.then((response) => response.json())
+						.then((count) => {
 							this.setState(Object.assign(this.state.user, { entries: count }));
 						})
 						.catch(console.log);
 				}
 				this.displayFaceBoxes(this.calculateFaceLocations(response));
 			})
-			.catch(err => console.log(err));
+			.catch((err) => console.log(err));
 	};
 
-	onRouteChange = route => {
+	onRouteChange = (route) => {
 		if (route === 'signout') {
 			return this.setState(initialState);
 		} else if (route === 'home') {
@@ -116,15 +119,33 @@ class App extends Component {
 		this.setState({ route: route });
 	};
 
+	toggleModal = () => {
+		this.setState((prevState) => ({
+			...prevState,
+			isProfileOpen: !prevState.isProfileOpen,
+		}));
+	};
+
 	render() {
-		const { isSignedIn, imageUrl, route, boxes } = this.state;
+		const { isSignedIn, imageUrl, route, boxes, isProfileOpen } = this.state;
 		return (
 			<div className="App">
 				<Particles className="particles" params={particleOptions} />
 				<Navigation
 					isSignedIn={isSignedIn}
 					onRouteChange={this.onRouteChange}
+					toggleModal={this.toggleModal}
 				/>
+				{isProfileOpen && (
+					<Modal>
+						{
+							<Profile
+								isProfileOpen={isProfileOpen}
+								toggleModal={this.toggleModal}
+							/>
+						}
+					</Modal>
+				)}
 				{route === 'home' ? (
 					<div>
 						<Logo />

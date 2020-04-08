@@ -3,7 +3,7 @@ import {
 	Dropdown,
 	DropdownToggle,
 	DropdownMenu,
-	DropdownItem
+	DropdownItem,
 } from 'reactstrap';
 
 import './Profileicon.css';
@@ -12,13 +12,13 @@ class ProfileIcon extends React.Component {
 	constructor(props) {
 		super();
 		this.state = {
-			dropdownOpen: false
+			dropdownOpen: false,
 		};
 	}
 
 	toggle = () => {
-		this.setState(prevState => ({
-			dropdownOpen: !prevState.dropdownOpen
+		this.setState((prevState) => ({
+			dropdownOpen: !prevState.dropdownOpen,
 		}));
 	};
 
@@ -42,7 +42,9 @@ class ProfileIcon extends React.Component {
 						className="b--transparent shadow-5 transparent-dropdown"
 						style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
 					>
-						<DropdownItem>View Profile</DropdownItem>
+						<DropdownItem onClick={this.props.toggleModal}>
+							View Profile
+						</DropdownItem>
 						<DropdownItem onClick={() => this.props.onRouteChange('signout')}>
 							Sign Out
 						</DropdownItem>
