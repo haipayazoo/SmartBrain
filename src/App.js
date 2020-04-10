@@ -59,6 +59,39 @@ class App extends Component {
 		});
 	};
 
+	componentDidMount() {
+		const token = window.sessionStorage.getItem('token');
+		if (token) {
+			fetch('http://192.168.99.100:3000/signin', {
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: token,
+				},
+			})
+				.then((resp) => resp.json())
+				.then((data) => {
+					if (data && data.id) {
+						fetch(`http://192.168.99.100:3000/profile/${data.id}`, {
+							method: 'get',
+							headers: {
+								'Content-Type': 'application/json',
+								Authorization: token,
+							},
+						})
+							.then((resp) => resp.json())
+							.then((user) => {
+								if (user && user.email) {
+									this.loadUser(user);
+									this.onRouteChange('home');
+								}
+							});
+					}
+				})
+				.catch(console.log);
+		}
+	}
+
 	calculateFaceLocations = (data) => {
 		return data.outputs[0].data.regions.map((face) => {
 			const clarifaiFace = face.region_info.bounding_box;
